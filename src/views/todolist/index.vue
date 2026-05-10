@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import ChangeList from './comonents/ChangeList.vue'
 import Shaixuan from './comonents/Shaixuan.vue'
 
@@ -31,16 +31,6 @@ function toggledone(index) {
 
   item.done = !item.done
 }
-
-const filteredList = computed(() => {
-  if (filters.value === 'done')
-    return list.value.filter(item => item.done)
-
-  if (filters.value === 'todo')
-    return list.value.filter(item => !item.done)
-
-  return list.value
-})
 </script>
 
 <template>
@@ -53,9 +43,10 @@ const filteredList = computed(() => {
   </button>
   <Shaixuan v-model:filters="filters" />
   <ChangeList
-    :list="filteredList"
+    :list="list"
     :toggledone="toggledone"
     :remove-item="removeItem"
+    :filters="filters"
   />
 </template>
 
