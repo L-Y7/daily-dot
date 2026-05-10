@@ -1,18 +1,19 @@
 <script setup>
 defineProps({
   list: Array,
-  removeItem:Function,
-  toggledone:Function
+  removeItem: Function,
+  toggledone: Function,
 })
-
 </script>
 
 <template>
   <ul>
-    <li v-for="(item, index) in list" :key="index">
+    <li
+      v-for="(item, index) in list"
+      :key="item.id"
+    >
       <span :class="{ done: item.done }">
         {{ item.text }}
-        {{ item.done }}
       </span>
       <button @click="removeItem(index)">
         删除
@@ -24,4 +25,4 @@ defineProps({
   </ul>
 </template>
 
-<style lang='scss' scoped></style>
+<style lang="scss" scoped></style>
