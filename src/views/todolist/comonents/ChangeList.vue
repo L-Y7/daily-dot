@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 
-const props = defineProps({
+const { list, removeItem, toggledone, filters } = defineProps({
   list: Array,
   removeItem: Function,
   toggledone: Function,
@@ -9,13 +9,13 @@ const props = defineProps({
 })
 
 const filteredList = computed(() => {
-  if (props.filters === 'done')
-    return props.list.filter(item => item.done)
+  if (filters === 'done')
+    return list.filter(item => item.done)
 
-  if (props.filters === 'todo')
-    return props.list.filter(item => !item.done)
+  if (filters === 'todo')
+    return list.filter(item => !item.done)
 
-  return props.list
+  return list
 })
 </script>
 
