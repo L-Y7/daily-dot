@@ -4,7 +4,13 @@ import Login from '../views/login/index.vue'
 import TodoList from '../views/todolist/index.vue'
 
 const routes = [
-  { path: '/', component: TodoList },
+  {
+    path: '/',
+    redirect: '/login',
+    children: [
+      { path: '/todolist', component: TodoList },
+    ],
+  },
   { path: '/login', component: Login },
 ]
 
