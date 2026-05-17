@@ -6,10 +6,7 @@ import Login from './views/login/index.vue'
 </script>
 
 <template>
-  <Login />
-  <!-- <PropsTest />
-  <Todolist />
-  <VModel /> -->
+  <Login id="loginid" class="login2" />
 </template>
 
 <style lang='scss' scoped></style>
