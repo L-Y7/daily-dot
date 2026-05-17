@@ -1,12 +1,16 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const neirong = ref('')
 const username = ref('')
-function Login() {
+function login() {
   localStorage.setItem('neirong', neirong.value)
   username.value = neirong.value
+  router.push('/todolist')
 }
+
 onMounted(
   () => {
     const savename = localStorage.getItem('neirong')
@@ -34,7 +38,7 @@ onMounted(
               v-model="neirong" type="text" required class="write"
               placeholder="直接输入用户名（无需注册）"
             >
-            <button class="btn" :disabled="!neirong.trim()" @click="Login">
+            <button class="btn" :disabled="!neirong.trim()" @click="login">
               <span class="log">登录</span>
             </button>
           </form>
@@ -68,7 +72,7 @@ onMounted(
   letter-spacing: -0.5px;
 }
 .login-subtitle {
-  color: #A8A29E;
+  color: #a8a29e;
   font-size: 15px;
   font-weight: 500;
   margin-bottom: var(--space-8);
@@ -100,9 +104,8 @@ onMounted(
   background-color: orange;
 }
 .btn:disabled {
-  background-color: #A8A29E;;
+  background-color: #a8a29e;
   cursor: not-allowed;
- 
 }
 .log {
   color: #e5e5e5;
