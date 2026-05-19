@@ -1,17 +1,17 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-import Login from '../views/login/index.vue'
+import Daka from '../views/daka/index.vue'
 import TodoList from '../views/todolist/index.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/login',
+    redirect: '/daka',
     children: [
       { path: '/todolist', component: TodoList },
     ],
   },
-  { path: '/login', component: Login },
+  { path: '/daka', component: Daka },
 ]
 
 export const router = createRouter({
