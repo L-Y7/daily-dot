@@ -5,19 +5,41 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const neirong = ref('')
 const username = ref('')
+const loginTime = ref('')
 function login() {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const weekList = [
+    '星期日',
+    '星期一',
+    '星期二',
+    '星期三',
+    '星期四',
+    '星期五',
+    '星期六',
+  ]
+  const week = weekList[now.getDay()]
+  const time = `${year}-${month}-${day}·${week}`
   localStorage.setItem('neirong', neirong.value)
+  localStorage.setItem('loginTime', time)
   username.value = neirong.value
-  router.push({ path: '/todolist', query: { id: 10086 } })
+  router.push({ path: '/daka', query: { id: 10086 } })
 }
 
 onMounted(
   () => {
     const savename = localStorage.getItem('neirong')
+    const savetime = localStorage.getItem('loginTime')
     if (savename) {
       username.value = savename
     }
+    if (savetime) {
+      loginTime.value = savetime
+    }
   },
+
 )
 </script>
 

@@ -1,17 +1,44 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
+import Layout from '../layout/index.vue'
+
 import Daka from '../views/daka/index.vue'
+import Tongji from '../views/shuju/index.vue'
 import TodoList from '../views/todolist/index.vue'
+import Xiguan from '../views/xiguan/index.vue'
 
 const routes = [
   {
+    path: '/login',
+    component: () => import('../views/login/index.vue'),
+  },
+
+  {
     path: '/',
+    component: Layout,
+
     redirect: '/daka',
+
     children: [
-      { path: '/todolist', component: TodoList },
+      {
+        path: 'daka',
+        component: Daka,
+      },
+
+      {
+        path: 'todolist',
+        component: TodoList,
+      },
+      {
+        path: 'manage',
+        component: Xiguan,
+      },
+      {
+        path: 'stats',
+        component: Tongji,
+      },
     ],
   },
-  { path: '/daka', component: Daka },
 ]
 
 export const router = createRouter({
