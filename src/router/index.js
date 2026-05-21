@@ -30,11 +30,11 @@ const routes = [
         component: TodoList,
       },
       {
-        path: 'manage',
+        path: 'xiguan',
         component: Xiguan,
       },
       {
-        path: 'stats',
+        path: 'shuju',
         component: Tongji,
       },
     ],

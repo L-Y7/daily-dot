@@ -119,7 +119,6 @@ const habits = [
   font-size: 11px;
   color: #78716c;
   text-transform: uppercase;
-
   font-weight: 700;
 }
 

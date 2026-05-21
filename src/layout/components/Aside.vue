@@ -4,8 +4,8 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const list = [
   { id: 1, name: '每日打卡', path: '/daka' },
-  { id: 2, name: '深度管理', path: '/manage' },
-  { id: 3, name: '数据统计', path: '/stats' },
+  { id: 2, name: '深度管理', path: '/xiguan' },
+  { id: 3, name: '数据统计', path: '/shuju' },
 ]
 </script>
 
