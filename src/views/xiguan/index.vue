@@ -3,9 +3,20 @@ import { computed, ref } from 'vue'
 
 const username = localStorage.getItem('neirong')
 const time = localStorage.getItem('loginTime')
-
+const sucessshow = ref('')
+const type = ref('')
 function toggle(item) {
   item.done = !item.done
+  sucessshow.value = true
+  if (item.done) {
+    type.value = 'success'
+  }
+  else {
+    type.value = 'cancel'
+  }
+  setTimeout(() => {
+    sucessshow.value = false
+  }, 2000)
 }
 
 const items = ref([
@@ -22,10 +33,13 @@ const count = computed(() => {
 const progress = computed(() => {
   return (count.value / items.value.length)
 })
+const xianshi = computed(() => {
+  return (4 - count.value)
+})
 const r = 45
 const c = 2 * r * Math.PI
 const set = computed(() => {
-  return c * (1 - progress.value)
+  return c * (1 - Math.max(progress.value, 0.005))
 })
 </script>
 
@@ -47,27 +61,34 @@ const set = computed(() => {
       <svg class="progress-svg " width="135" height="135">
         <circle
           class="bg-circle"
-          cx="50%"
-          cy="50%"
+          cx="67.5"
+          cy="67.5"
           r="45"
         />
         <circle
           class="progress-circle"
-          cx="50%"
-          cy="50%"
+          cx="67.5"
+          cy="67.5"
           r="45"
           :stroke-dasharray="c"
           :stroke-dashoffset="set"
         />
+
       </svg>
       <div class="progress-inner">
-        {{ count }}/{{ items.length }}
+        <span class="num">{{ count }}</span>/{{ items.length }}
       </div>
     </div>
   </div>
 
   <div class="title">
-    今日待打卡
+    <div class="title-left">
+      <div class="bar" />
+      <div>今日待打卡</div>
+    </div>
+    <div class="title-right">
+      {{ xianshi }}个待完成·共4个
+    </div>
   </div>
 
   <div class="task-section">
@@ -140,6 +161,35 @@ const set = computed(() => {
       </li>
     </ul>
   </div>
+  <Transition name="success">
+    <div
+      v-if="sucessshow"
+      class="biggest"
+    >
+      <template v-if="type === 'success'">
+        <div class="bigger">
+          <div class="success-text">
+            已打卡
+          </div>
+          <div class="success-icon">
+            ✔
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="bigger2">
+          <div class="success-text2">
+            已取消
+          </div>
+
+          <div class="success-icon">
+            ✖
+          </div>
+        </div>
+      </template>
+    </div>
+  </Transition>
 </template>
 
 <style lang="scss" scoped>
@@ -173,13 +223,19 @@ const set = computed(() => {
 }
 
 .progress-inner {
- text-align: center;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
 }
 .progress-svg {
   position: absolute;
-  top: 0;
-  left: 0;
-  transform: rotate(-90deg);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
 }
 
 .bg-circle {
@@ -193,23 +249,37 @@ const set = computed(() => {
   stroke-width: 12;
   stroke-linecap: round;
   transition: all 0.5s ease;
-  transform: rotate(-90deg);
   transform-origin: center;
+}
+.num {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #d97706;
+  line-height: 1;
 }
 .title {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: space-between;
   padding: 10px;
   font-size: 20px;
   font-weight: 500;
 }
 
-.title::before {
-  content: '';
+.title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title-right {
+  font-size: 13px;
+  color: #78716c;
+  font-weight: 600;
+}
+.bar {
   width: 5px;
   height: 25px;
-  display: inline-block;
   border-radius: 999px;
   background-color: #d97706;
 }
@@ -217,7 +287,7 @@ const set = computed(() => {
 .task-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -226,6 +296,7 @@ const set = computed(() => {
 .task-item {
   width: calc(33.333% - 8px);
   height: 160px;
+  margin-top: 20px;
 }
 
 .task-card {
@@ -233,13 +304,18 @@ const set = computed(() => {
   padding: 20px;
   background-color: white;
   transition: all 0.35s ease;
+  border-radius: 20px;
+  border: 2px solid #faeee1;
 }
-
+.task-item:nth-child(4) {
+  margin-top: 32px;
+}
 .task-card.done {
   transform: translateY(-6px);
   background: #dff7e7;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   text-decoration: none !important;
+  border: 2px solid greenyellow;
 }
 
 .task-card.done .cardup {
@@ -363,7 +439,40 @@ const set = computed(() => {
     0 4px 0 #b45309,
     0 6px 12px rgba(217, 119, 6, 0.25);
 }
-
+.biggest {
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin-top: 100px;
+  justify-content: center;
+}
+.bigger {
+  background-color: #22c55e;
+  padding: 20px;
+  display: flex;
+  border-radius: 30px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 5px;
+}
+.bigger2 {
+  background-color: red;
+  padding: 20px;
+  display: flex;
+  border-radius: 30px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 5px;
+}
+.success-icon {
+  border-radius: 50%;
+  font-size: 14px;
+  color: white;
+}
 .pop-enter-active {
   transition: all 0.25s ease;
 }
@@ -377,7 +486,20 @@ const set = computed(() => {
   opacity: 1;
   transform: scale(1);
 }
+.success-enter-active,
+.success-leave-active {
+  transition: all 0.35s ease;
+}
 
+.success-enter-from,
+.success-leave-to {
+  opacity: 0;
+}
+
+.success-enter-from .bigger,
+.success-leave-to .bigger {
+  transform: scale(0.7) translateY(20px);
+}
 @keyframes wave {
   0% {
     transform: rotate(0deg);
