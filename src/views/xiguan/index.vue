@@ -1,8 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue'
+import DashboardHeader from './components/DashboardHeader.vue'
+import TaskCard from './components/TaskCard.vue'
+import Toast from './components/Toast.vue'
 
-const username = localStorage.getItem('neirong')
-const time = localStorage.getItem('loginTime')
 const sucessshow = ref('')
 const type = ref('')
 function toggle(item) {
@@ -17,6 +18,7 @@ function toggle(item) {
   setTimeout(() => {
     sucessshow.value = false
   }, 2000)
+  
 }
 
 const items = ref([
@@ -25,62 +27,16 @@ const items = ref([
   { id: 3, name: '早起', time: '6.30前·', day: '连续三天', icon: '🌅', done: false },
   { id: 4, name: '早起', time: '6.30前·', day: '连续三天', icon: '🌅', done: false },
 ])
-
 const count = computed(() => {
   return items.value.filter(item => item.done).length
 })
-
-const progress = computed(() => {
-  return (count.value / items.value.length)
-})
-const xianshi = computed(() => {
-  return (4 - count.value)
-})
-const r = 45
-const c = 2 * r * Math.PI
-const set = computed(() => {
-  return c * (1 - Math.max(progress.value, 0.005))
-})
+const xianshi = computed(
+  () => { return (4 - count.value) },
+)
 </script>
 
 <template>
-  <div class="dashboard-header">
-    <div class="header-left">
-      <h1>
-        <span>早上好,</span>
-        <span>{{ username }}</span>
-        <span class="wave-icon">👋</span>
-      </h1>
-
-      <div class="header-time">
-        {{ time }}·今天也要加油啊
-      </div>
-    </div>
-
-    <div class="progress-card">
-      <svg class="progress-svg " width="135" height="135">
-        <circle
-          class="bg-circle"
-          cx="67.5"
-          cy="67.5"
-          r="45"
-        />
-        <circle
-          class="progress-circle"
-          cx="67.5"
-          cy="67.5"
-          r="45"
-          :stroke-dasharray="c"
-          :stroke-dashoffset="set"
-        />
-
-      </svg>
-      <div class="progress-inner">
-        <span class="num">{{ count }}</span>/{{ items.length }}
-      </div>
-    </div>
-  </div>
-
+  <DashboardHeader :items="items" />
   <div class="title">
     <div class="title-left">
       <div class="bar" />
@@ -98,166 +54,19 @@ const set = computed(() => {
         :key="item.id"
         class="task-item"
       >
-        <div
-          class="task-card"
-          :class="{ done: item.done }"
-        >
-          <Transition name="pop">
-            <div
-              v-if="item.done"
-              class="check"
-            >
-              ✔
-            </div>
-          </Transition>
-
-          <div class="cardup">
-            <div class="task-icon">
-              {{ item.icon }}
-            </div>
-
-            <div class="task-content">
-              <div class="task-title">
-                {{ item.name }}
-              </div>
-
-              <div>
-                <span class="task-time">
-                  {{ item.time }}
-                </span>
-
-                <span class="task-tag">
-                  {{ item.day }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="carddown">
-            <div class="l">
-              <span
-                class="circle"
-                :class="{ active: item.done }"
-              />
-
-              <span
-                class="text"
-                :class="{ active: item.done }"
-              >
-                {{ item.done ? '已完成' : '待打卡' }}
-              </span>
-            </div>
-
-            <div class="r">
-              <button
-                class="btn"
-                @click="toggle(item)"
-              >
-                {{ item.done ? '取消' : '打卡✓' }}
-              </button>
-            </div>
-          </div>
-        </div>
+        <TaskCard :item="item" @toggle="toggle" />
       </li>
     </ul>
   </div>
-  <Transition name="success">
-    <div
-      v-if="sucessshow"
-      class="biggest"
-    >
-      <template v-if="type === 'success'">
-        <div class="bigger">
-          <div class="success-text">
-            已打卡
-          </div>
-          <div class="success-icon">
-            ✔
-          </div>
-        </div>
-      </template>
-
-      <template v-else>
-        <div class="bigger2">
-          <div class="success-text2">
-            已取消
-          </div>
-
-          <div class="success-icon">
-            ✖
-          </div>
-        </div>
-      </template>
-    </div>
-  </Transition>
+  <Toast :show="sucessshow" :type="type" />
 </template>
 
 <style lang="scss" scoped>
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.header-time {
-  margin-top: 15px;
-  font-size: 15px;
-  color: #78716c;
-  font-weight: 500;
-}
-
 .wave-icon {
   display: inline-block;
   animation: wave 2.5s infinite;
 }
 
-.progress-card {
-  width: 150px;
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  background-color: white;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.progress-inner {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-}
-.progress-svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-90deg);
-}
-
-.bg-circle {
-  fill: none;
-  stroke: #faeee1;
-  stroke-width: 12;
-}
-.progress-circle {
-  fill: none;
-  stroke: #d97706;
-  stroke-width: 12;
-  stroke-linecap: round;
-  transition: all 0.5s ease;
-  transform-origin: center;
-}
-.num {
-  font-family: 'Fredoka', sans-serif;
-  font-size: 30px;
-  font-weight: 700;
-  color: #d97706;
-  line-height: 1;
-}
 .title {
   display: flex;
   align-items: center;
@@ -292,88 +101,15 @@ const set = computed(() => {
   margin: 0;
   list-style: none;
 }
-
 .task-item {
   width: calc(33.333% - 8px);
   height: 160px;
   margin-top: 20px;
 }
 
-.task-card {
-  position: relative;
-  padding: 20px;
-  background-color: white;
-  transition: all 0.35s ease;
-  border-radius: 20px;
-  border: 2px solid #faeee1;
-}
 .task-item:nth-child(4) {
   margin-top: 32px;
 }
-.task-card.done {
-  transform: translateY(-6px);
-  background: #dff7e7;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  text-decoration: none !important;
-  border: 2px solid greenyellow;
-}
-
-.task-card.done .cardup {
-  border-bottom-color: transparent;
-}
-
-.cardup {
-  width: 100%;
-  display: flex;
-  gap: 20px;
-  padding-bottom: 12px;
-  border-bottom: 2px dashed #faeee1;
-}
-
-.carddown {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-}
-
-.task-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 26px;
-  border-radius: 16px;
-  background: #fcf6f0;
-  box-shadow:
-    0 2px 0 #faeee1,
-    0 4px 8px rgba(217, 119, 6, 0.05);
-}
-
-.task-content .task-title {
-  font-size: 17px;
-  font-weight: 600;
-  line-height: 1.3;
-  font-family: 'Fredoka', sans-serif;
-}
-
-.task-time {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #78716c;
-}
-
-.task-tag {
-  padding: 5px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #b45309;
-  border-radius: 15px;
-  background: #fef3c7;
-}
-
 .check {
   position: absolute;
   top: 12px;
@@ -439,67 +175,7 @@ const set = computed(() => {
     0 4px 0 #b45309,
     0 6px 12px rgba(217, 119, 6, 0.25);
 }
-.biggest {
-  position: fixed;
-  display: flex;
-  top: 0;
-  left: 0;
-  width: 100%;
-  margin-top: 100px;
-  justify-content: center;
-}
-.bigger {
-  background-color: #22c55e;
-  padding: 20px;
-  display: flex;
-  border-radius: 30px;
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
-  gap: 5px;
-}
-.bigger2 {
-  background-color: red;
-  padding: 20px;
-  display: flex;
-  border-radius: 30px;
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
-  gap: 5px;
-}
-.success-icon {
-  border-radius: 50%;
-  font-size: 14px;
-  color: white;
-}
-.pop-enter-active {
-  transition: all 0.25s ease;
-}
 
-.pop-enter-from {
-  opacity: 0;
-  transform: scale(0.3);
-}
-
-.pop-enter-to {
-  opacity: 1;
-  transform: scale(1);
-}
-.success-enter-active,
-.success-leave-active {
-  transition: all 0.35s ease;
-}
-
-.success-enter-from,
-.success-leave-to {
-  opacity: 0;
-}
-
-.success-enter-from .bigger,
-.success-leave-to .bigger {
-  transform: scale(0.7) translateY(20px);
-}
 @keyframes wave {
   0% {
     transform: rotate(0deg);
