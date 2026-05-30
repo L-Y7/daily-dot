@@ -230,8 +230,6 @@ const habitList = [
 }
 
 /* ==================== 核心指标 ==================== */
-.statistics-section {
-}
 
 .statistics-list {
   display: flex;
