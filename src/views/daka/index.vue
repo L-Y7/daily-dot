@@ -24,10 +24,17 @@ const iconOptions = [
   '🧘',
   '🎯',
 ]
-
-  function savehabits() {
-    localStorage.setItem(savekey, JSON.stringify(habits.value))
+function setIcon(icon) {
+  if (form.value.selectedIcon === icon) {
+    inputRef.value?.focus?.()
+    return
   }
+  form.value.selectedIcon = icon
+  inputRef.value?.focus?.()
+}
+function savehabits() {
+  localStorage.setItem(savekey, JSON.stringify(habits.value))
+}
 onMounted(() => {
   const savedHabits = localStorage.getItem(savekey)
   if (savedHabits) {
@@ -210,7 +217,7 @@ watch(
             :key="icon"
             :class="{ active: form.selectedIcon === icon }"
             class="habit-icon-item"
-            @click="form.selectedIcon = icon"
+            @click="setIcon(icon)"
           >
             {{ icon }}
           </div>
