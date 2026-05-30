@@ -1,18 +1,19 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 
 const getToday = () => new Date().toISOString().slice(0, 10)
 const getId = () => crypto.randomUUID?.() || Date.now().toString()
 
 const showModal = ref(false)
 const inputRef = ref(null)
-
+const savekey = 'habit-list'
+const habits = ref([])
 const form = ref({
   habitName: '',
   selectedIcon: '🌱',
 })
-
+const isReady = ref(false)
 const iconOptions = [
   '🌱',
   '🌅',
@@ -24,48 +25,51 @@ const iconOptions = [
   '🎯',
 ]
 
-const habits = ref([
-  {
-    id: 1,
-    name: '每日阅读',
-    icon: '📚',
-    streak: 12,
-    createdAt: getToday(),
-    lastCheckin: '今天',
-    completedToday: true,
-  },
-
-  {
-    id: 2,
-    name: '晨跑',
-    icon: '🏃',
-    streak: 5,
-    createdAt: getToday(),
-    lastCheckin: '昨天',
-    completedToday: false,
-  },
-
-  {
-    id: 3,
-    name: '喝水 8 杯',
-    icon: '💧',
-    streak: 20,
-    createdAt: getToday(),
-    lastCheckin: '今天',
-    completedToday: true,
-  },
-
-  {
-    id: 4,
-    name: '早起',
-    icon: '🌅',
-    streak: 5,
-    createdAt: getToday(),
-    lastCheckin: '今天',
-    completedToday: true,
-  },
-])
-
+  function savehabits() {
+    localStorage.setItem(savekey, JSON.stringify(habits.value))
+  }
+onMounted(() => {
+  const savedHabits = localStorage.getItem(savekey)
+  if (savedHabits) {
+    habits.value = JSON.parse(savedHabits)
+  }
+  else {
+    habits.value = [{
+      id: 1,
+      name: '每日阅读',
+      icon: '📚',
+      streak: 12,
+      createdAt: getToday(),
+      lastCheckin: '今天',
+      completedToday: true,
+    }, {
+      id: 2,
+      name: '晨跑',
+      icon: '🏃',
+      streak: 5,
+      createdAt: getToday(),
+      lastCheckin: '昨天',
+      completedToday: false,
+    }, {
+      id: 3,
+      name: '喝水 8 杯',
+      icon: '💧',
+      streak: 20,
+      createdAt: getToday(),
+      lastCheckin: '今天',
+      completedToday: true,
+    }, {
+      id: 4,
+      name: '早起',
+      icon: '🌅',
+      streak: 5,
+      createdAt: getToday(),
+      lastCheckin: '今天',
+      completedToday: true,
+    }]
+  }
+  isReady.value = true
+})
 function resetForm() {
   form.value.habitName = ''
   form.value.selectedIcon = '🌱'
@@ -102,10 +106,21 @@ function removeHabit(id, name) {
 watch(showModal, async (visible) => {
   if (!visible)
     return
-
   await nextTick()
   inputRef.value?.focus?.()
 })
+watch(
+  () => habits.value,
+  () => {
+    if (!isReady.value)
+      return
+    savehabits()
+  },
+
+  {
+    deep: true,
+  },
+)
 </script>
 
 <template>

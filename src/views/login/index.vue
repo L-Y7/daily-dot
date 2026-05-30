@@ -1,46 +1,17 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { UserNameKey } from '../../utils/const'
 
 const router = useRouter()
-const neirong = ref('')
-const username = ref('')
-const loginTime = ref('')
+
+const userName = ref('')
+
 function login() {
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-  const day = String(now.getDate()).padStart(2, '0')
-  const weekList = [
-    '星期日',
-    '星期一',
-    '星期二',
-    '星期三',
-    '星期四',
-    '星期五',
-    '星期六',
-  ]
-  const week = weekList[now.getDay()]
-  const time = `${year}-${month}-${day}·${week}`
-  localStorage.setItem('neirong', neirong.value)
-  localStorage.setItem('loginTime', time)
-  username.value = neirong.value
+  localStorage.setItem(UserNameKey, userName.value)
+
   router.push({ path: '/daka', query: { id: 10086 } })
 }
-
-onMounted(
-  () => {
-    const savename = localStorage.getItem('neirong')
-    const savetime = localStorage.getItem('loginTime')
-    if (savename) {
-      username.value = savename
-    }
-    if (savetime) {
-      loginTime.value = savetime
-    }
-  },
-
-)
 </script>
 
 <template>
@@ -83,10 +54,10 @@ onMounted(
           <form class="box2">
             <div>用户名</div>
             <input
-              v-model="neirong" type="text" required class="write"
+              v-model="userName" type="text" required class="write"
               placeholder="直接输入用户名（无需注册）"
             >
-            <button class="btn" :disabled="!neirong.trim()" @click="login">
+            <button class="btn" :disabled="!userName.trim()" @click="login">
               <span class="log">登录</span>
             </button>
           </form>

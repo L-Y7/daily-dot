@@ -4,7 +4,7 @@ import DashboardHeader from './components/DashboardHeader.vue'
 import TaskCard from './components/TaskCard.vue'
 import Toast from './components/Toast.vue'
 
-const sucessshow = ref('')
+const sucessshow = ref(false)
 const type = ref('')
 function toggle(item) {
   item.done = !item.done

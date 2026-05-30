@@ -1,5 +1,7 @@
 <script setup>
+import dayjs from 'dayjs'
 import { computed } from 'vue'
+import { UserNameKey } from '../../../utils/const'
 
 const props = defineProps({
   items: {
@@ -7,8 +9,23 @@ const props = defineProps({
     required: true,
   },
 })
-const username = localStorage.getItem('neirong')
-const time = localStorage.getItem('loginTime')
+
+const curDate = dayjs().format('YYYY-MM-DD')
+
+const weekList = [
+  '星期日',
+  '星期一',
+  '星期二',
+  '星期三',
+  '星期四',
+  '星期五',
+  '星期六',
+]
+
+const curWeek = weekList[dayjs().get('day')]
+
+const username = localStorage.getItem(UserNameKey)
+
 const count = computed(() => {
   return props.items.filter(item => item.done).length
 })
@@ -33,7 +50,7 @@ const set = computed(() => {
       </h1>
 
       <div class="header-time">
-        {{ time }}·今天也要加油啊
+        {{ curDate }}·{{ curWeek }}·今天也要加油啊
       </div>
     </div>
 
