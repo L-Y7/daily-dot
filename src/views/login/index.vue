@@ -8,9 +8,12 @@ const router = useRouter()
 const userName = ref('')
 
 function login() {
-  localStorage.setItem(UserNameKey, userName.value)
+  if (!userName.value.trim())
+    return
 
-  router.push({ path: '/daka', query: { id: 10086 } })
+  localStorage.setItem(UserNameKey, userName.value.trim())
+
+  router.push('/daka')
 }
 </script>
 
@@ -23,7 +26,7 @@ function login() {
         </div>
       </div>
       <div class="boxtwo">
-        <span class="text1">DAilyDot</span>
+        <span class="text1">DailyDot</span>
         <div class="text2">
           每天一点 长期一片
         </div>
@@ -51,13 +54,18 @@ function login() {
           </p>
         </div>
         <div>
-          <form class="box2">
-            <div>用户名</div>
+          <form class="box2" @submit.prevent="login">
+            <label class="form-label" for="username">用户名</label>
             <input
-              v-model="userName" type="text" required class="write"
+              id="username"
+              v-model="userName"
+              type="text"
+              required
+              class="write"
+              autocomplete="username"
               placeholder="直接输入用户名（无需注册）"
             >
-            <button class="btn" :disabled="!userName.trim()" @click="login">
+            <button type="submit" class="btn" :disabled="!userName.trim()">
               <span class="log">登录</span>
             </button>
           </form>
@@ -71,140 +79,302 @@ function login() {
 * {
   box-sizing: border-box;
 }
+
 .login {
+  display: flex;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
+  color: #1c1917;
   background-color: #fffbeb;
-  display: flex;
 }
+
 .right {
-  flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 48px 56px;
 }
+
 .box1 {
-  margin: 0 auto;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(245, 158, 11, 0.25);
-  border: 1px solid #b45309;
-  background-color: #ffffff;
-  padding: 40px;
   width: 420px;
+  padding: 42px 40px;
+
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+
+  border: 2px solid rgba(180, 83, 9, 0.28);
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 16px 32px rgba(245, 158, 11, 0.22),
+    0 4px 0 rgba(180, 83, 9, 0.16);
 }
+
 .box1 .title .login-title {
+  margin: 0 0 10px;
+
   font-family: 'Fredoka', sans-serif;
-  font-weight: 600;
   font-size: 34px;
-  margin-bottom: 8px;
-  letter-spacing: -0.5px;
+  font-weight: 600;
+  line-height: 1.15;
+
+  color: #292524;
 }
+
 .box1 .title .login-subtitle {
-  color: #a8a29e;
+  margin: 0 0 26px;
+
   font-size: 15px;
   font-weight: 500;
-  margin-bottom: 20px;
+  line-height: 1.7;
+
+  color: #78716c;
 }
+
 .box1 .title {
   display: flex;
-  text-align: center;
   flex-direction: column;
+  text-align: center;
 }
+
 .box2 {
-  margin-top: 20px;
+  margin-top: 4px;
 }
+
+.form-label {
+  display: block;
+  margin-bottom: 10px;
+
+  font-size: 14px;
+  font-weight: 700;
+  color: #44403c;
+}
+
 .box2 .write {
   width: 100%;
-  height: 40px;
+  height: 48px;
+  padding: 0 16px;
+
+  border: 2px solid #f59e0b;
   border-radius: 15px;
-  margin-top: 10px;
-  border: 2px solid orange;
-  padding: 5px;
+  outline: none;
+
+  font-size: 15px;
+  font-weight: 500;
+  color: #292524;
+
+  background: #fffbeb;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
+
+.box2 .write::placeholder {
+  color: #a8a29e;
+  font-weight: 500;
+}
+
+.box2 .write:focus {
+  border-color: #d97706;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
+}
+
 .box2 .btn {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   width: 100%;
-  height: 50px;
-  border-radius: 10px;
+  height: 52px;
   margin-top: 20px;
-  background-color: orange;
+
+  border: none;
+  border-radius: 12px;
+
+  cursor: pointer;
+  background: #f59e0b;
+
+  box-shadow:
+    0 4px 0 #b45309,
+    0 10px 20px rgba(245, 158, 11, 0.28);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
 }
+
+.box2 .btn:not(:disabled):hover {
+  transform: translateY(-2px);
+  background: #d97706;
+  box-shadow:
+    0 6px 0 #92400e,
+    0 14px 24px rgba(245, 158, 11, 0.32);
+}
+
+.box2 .btn:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 #92400e,
+    0 6px 12px rgba(245, 158, 11, 0.24);
+}
+
 .box2 .btn:disabled {
-  background-color: #a8a29e;
+  background: #a8a29e;
+  box-shadow: none;
   cursor: not-allowed;
 }
+
 .box2 .log {
-  color: #e5e5e5;
-  font-size: 25px;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
 }
+
 .login .left {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  flex: 1;
+
   border: 3px solid orange;
+
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+
+  box-shadow: 12px 0 32px rgba(180, 83, 9, 0.18);
 }
+
 .left .boxone {
   display: flex;
-  flex: 1;
   align-items: center;
   justify-content: center;
+  flex: 1;
 }
+
 .left .boxone .picture {
-  font-size: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: float 3s ease-in-out infinite;
-  background: rgba(255, 255, 255, 0.22);
-  height: 220px;
+
   width: 220px;
+  height: 220px;
+
+  border: 1px solid rgba(255, 255, 255, 0.42);
   border-radius: 50%;
-  border: 1px solid gainsboro;
+
+  font-size: 100px;
+
+  background: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 16px 32px rgba(120, 53, 15, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.65) inset;
+
+  animation: float 3s ease-in-out infinite;
 }
+
 .login .left .boxtwo {
   flex: 1;
   margin-top: -100px;
   text-align: center;
 }
+
 .left .boxtwo .text1 {
-  font-weight: 500;
-  color: #f6efef;
   font-family: 'Fredoka', sans-serif;
   font-size: 60px;
-}
-.left .boxtwo .text2 {
-  font-weight: 500;
-  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+
   color: #f6efef;
-  font-family: 'Fredoka', sans-serif;
-  text-align: center;
+  text-shadow: 0 6px 18px rgba(120, 53, 15, 0.18);
+}
+
+.left .boxtwo .text2 {
   margin-top: 10px;
   margin-bottom: 35px;
+
+  font-family: 'Fredoka', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #f6efef;
 }
+
 .daohang {
   display: flex;
-  gap: 10px;
   justify-content: center;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
 }
+
 .left .boxtwo .suoyin {
-  border: 1px solid rgba(180, 83, 9, 0.25);
   list-style: none;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.22);
-  color: #fffbeb;
   width: 150px;
   height: 50px;
+
+  border: 1px solid rgba(180, 83, 9, 0.25);
+  border-radius: 20px;
+
+  color: #fffbeb;
   text-align: center;
   line-height: 50px;
-  transition: all 0.2s;
+
+  background-color: rgba(255, 255, 255, 0.22);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+
   display: inline-block;
 }
+
 .left .boxtwo .suoyin:hover {
-  transform: translateY(-5px) rotate(5deg);
+  transform: translateY(-5px) rotate(3deg);
+  border-color: rgba(255, 255, 255, 0.42);
+  background-color: rgba(255, 255, 255, 0.28);
 }
+
+@media (max-width: 900px) {
+  .login {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .login .left {
+    flex: none;
+    padding: 42px 24px;
+  }
+
+  .left .boxone .picture {
+    width: 132px;
+    height: 132px;
+    font-size: 62px;
+  }
+
+  .left .boxtwo .text1 {
+    font-size: 44px;
+  }
+
+  .daohang {
+    flex-wrap: wrap;
+  }
+
+  .right {
+    padding: 28px 20px 40px;
+  }
+
+  .box1 {
+    width: min(100%, 420px);
+    padding: 30px 24px;
+  }
+}
+
 @keyframes float {
   0% {
     transform: translateY(0);

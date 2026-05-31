@@ -1,12 +1,19 @@
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { UserNameKey } from '../../utils/const'
 
 const route = useRoute()
+const router = useRouter()
 const list = [
   { id: 1, name: '每日打卡', path: '/daka' },
   { id: 2, name: '深度管理', path: '/xiguan' },
   { id: 3, name: '数据统计', path: '/shuju' },
 ]
+
+function backToLogin() {
+  localStorage.removeItem(UserNameKey)
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -47,9 +54,9 @@ const list = [
         其他
       </div>
 
-      <a href="#" class="footer-link">
+      <button class="footer-link" @click="backToLogin">
         原型概览
-      </a>
+      </button>
     </div>
   </div>
 </template>
@@ -124,8 +131,12 @@ const list = [
 }
 
 .sidebar-footer .footer-link {
+  padding: 0;
+  border: none;
   color: #44403c;
+  background: transparent;
   font-weight: 600;
   font-size: 14px;
+  cursor: pointer;
 }
 </style>
