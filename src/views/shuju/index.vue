@@ -1,71 +1,8 @@
 <script setup>
-const percent = 80
+import { useData } from '../../composables/useData'
 
-const statisticsList = [
-  {
-    id: 1,
-    icon: '🌅',
-    title: '本月累计打卡',
-    value: '30次',
-    compareText: '比上个月增加',
-  },
-  {
-    id: 2,
-    icon: '🌅',
-    title: '本月累计打卡',
-    value: '30次',
-    compareText: '比上个月增加',
-  },
-  {
-    id: 3,
-    icon: '🌅',
-    title: '本月累计打卡',
-    value: '30次',
-    compareText: '比上个月增加',
-  },
-  {
-    id: 4,
-    icon: '🌅',
-    title: '本月累计打卡',
-    value: '30次',
-    compareText: '比上个月增加',
-  },
-]
-
-const habitList = [
-  {
-    id: 1,
-    icon: '🌅',
-    title: '早起',
-    completionRate: percent,
-    completionText: '12/15天',
-    streak: [1, 1, 1, 0, 1, 1, 0],
-  },
-  {
-    id: 2,
-    icon: '🌅',
-    title: '喝水',
-    completionRate: percent,
-    completionText: '12/15天',
-    streak: [1, 1, 1, 0, 0, 1, 0],
-  },
-  {
-    id: 3,
-    icon: '🌅',
-    title: '阅读',
-    completionRate: percent,
-    completionText: '12/15天',
-    streak: [0, 1, 1, 0, 1, 1, 0],
-  },
-  {
-    id: 4,
-    icon: '🌅',
-    title: '跑步',
-    completionRate: percent,
-    completionText: '12/15天',
-    streak: [1, 1, 0, 0, 0, 1, 0],
-  },
-]
+// 统计数据由共享 habits 派生，不再维护独立假数据。
+const { statisticsList, habitStatistics: habitList } = useData()
 </script>
 
 <template>
@@ -74,7 +11,7 @@ const habitList = [
     <div class="statistics-header">
       <div class="statistics-header__info">
         <h1>本月统计</h1>
-        <p>数据每日0点刷新</p>
+        <p>数据每日 0 点刷新</p>
       </div>
 
       <div class="statistics-header__action">
@@ -152,7 +89,7 @@ const habitList = [
             <div class="habit-card__progress">
               <div
                 class="habit-card__progress-inner"
-                :style="{ width: `${percent}%` }"
+                :style="{ width: `${habit.completionRate}%` }"
               />
             </div>
             <div class="habit-card__footer">

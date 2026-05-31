@@ -1,29 +1,17 @@
 <script setup>
 import { Icon } from '@iconify/vue'
-import { nextTick, onMounted, ref, watch } from 'vue'
-
-const getToday = () => new Date().toISOString().slice(0, 10)
-const getId = () => crypto.randomUUID?.() || Date.now().toString()
+import { nextTick, ref, watch } from 'vue'
+import { useData } from '../../composables/useData'
 
 const showModal = ref(false)
 const inputRef = ref(null)
-const savekey = 'habit-list'
-const habits = ref([])
+// 习惯列表和新增/删除方法统一来自 useData，保证管理页改动能同步到其他页面。
+const { iconOptions, habits, addHabit: createHabit, removeHabit: deleteHabit } = useData()
 const form = ref({
   habitName: '',
-  selectedIcon: '🌱',
+  selectedIcon: iconOptions[0],
 })
-const isReady = ref(false)
-const iconOptions = [
-  '🌱',
-  '🌅',
-  '💧',
-  '📚',
-  '🏃',
-  '💪',
-  '🧘',
-  '🎯',
-]
+
 function setIcon(icon) {
   if (form.value.selectedIcon === icon) {
     inputRef.value?.focus?.()
@@ -32,54 +20,10 @@ function setIcon(icon) {
   form.value.selectedIcon = icon
   inputRef.value?.focus?.()
 }
-function savehabits() {
-  localStorage.setItem(savekey, JSON.stringify(habits.value))
-}
-onMounted(() => {
-  const savedHabits = localStorage.getItem(savekey)
-  if (savedHabits) {
-    habits.value = JSON.parse(savedHabits)
-  }
-  else {
-    habits.value = [{
-      id: 1,
-      name: '每日阅读',
-      icon: '📚',
-      streak: 12,
-      createdAt: getToday(),
-      lastCheckin: '今天',
-      completedToday: true,
-    }, {
-      id: 2,
-      name: '晨跑',
-      icon: '🏃',
-      streak: 5,
-      createdAt: getToday(),
-      lastCheckin: '昨天',
-      completedToday: false,
-    }, {
-      id: 3,
-      name: '喝水 8 杯',
-      icon: '💧',
-      streak: 20,
-      createdAt: getToday(),
-      lastCheckin: '今天',
-      completedToday: true,
-    }, {
-      id: 4,
-      name: '早起',
-      icon: '🌅',
-      streak: 5,
-      createdAt: getToday(),
-      lastCheckin: '今天',
-      completedToday: true,
-    }]
-  }
-  isReady.value = true
-})
+
 function resetForm() {
   form.value.habitName = ''
-  form.value.selectedIcon = '🌱'
+  form.value.selectedIcon = iconOptions[0]
   showModal.value = false
 }
 
@@ -89,25 +33,15 @@ function addHabit() {
     return
   }
 
-  habits.value.push({
-    id: getId(),
-    name: form.value.habitName,
-    icon: form.value.selectedIcon,
-    streak: 0,
-    createdAt: getToday(),
-    lastCheckin: '今天',
-    completedToday: false,
-  })
-
+  createHabit(form.value.habitName, form.value.selectedIcon)
   resetForm()
 }
 
 function removeHabit(id, name) {
   const ok = confirm(`确定删除 ${name} 吗？`)
 
-  if (ok) {
-    habits.value = habits.value.filter(habit => habit.id !== id)
-  }
+  if (ok)
+    deleteHabit(id)
 }
 
 watch(showModal, async (visible) => {
@@ -116,18 +50,6 @@ watch(showModal, async (visible) => {
   await nextTick()
   inputRef.value?.focus?.()
 })
-watch(
-  () => habits.value,
-  () => {
-    if (!isReady.value)
-      return
-    savehabits()
-  },
-
-  {
-    deep: true,
-  },
-)
 </script>
 
 <template>
@@ -457,7 +379,6 @@ watch(
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-
   margin: 20px 0;
 }
 

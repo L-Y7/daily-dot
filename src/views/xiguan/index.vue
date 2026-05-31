@@ -1,13 +1,17 @@
-<script setup>
-import { computed, ref } from 'vue'
+﻿<script setup>
+import { ref } from 'vue'
+import { useData } from '../../composables/useData'
 import DashboardHeader from './components/DashboardHeader.vue'
 import TaskCard from './components/TaskCard.vue'
 import Toast from './components/Toast.vue'
 
 const sucessshow = ref(false)
 const type = ref('')
+// 打卡页直接使用共享 habits，切换状态后管理页和统计页都会同步。
+const { habits: items, remainingCount, toggleHabit } = useData()
+
 function toggle(item) {
-  item.done = !item.done
+  toggleHabit(item)
   sucessshow.value = true
   if (item.done) {
     type.value = 'success'
@@ -18,21 +22,9 @@ function toggle(item) {
   setTimeout(() => {
     sucessshow.value = false
   }, 2000)
-  
 }
 
-const items = ref([
-  { id: 1, name: '早起', time: '6.30前·', day: '连续三天', icon: '🌅', done: false },
-  { id: 2, name: '早起', time: '6.30前·', day: '连续三天', icon: '🌅', done: false },
-  { id: 3, name: '早起', time: '6.30前·', day: '连续三天', icon: '🌅', done: false },
-  { id: 4, name: '早起', time: '6.30前·', day: '连续三天', icon: '🌅', done: false },
-])
-const count = computed(() => {
-  return items.value.filter(item => item.done).length
-})
-const xianshi = computed(
-  () => { return (4 - count.value) },
-)
+const xianshi = remainingCount
 </script>
 
 <template>
@@ -43,7 +35,7 @@ const xianshi = computed(
       <div>今日待打卡</div>
     </div>
     <div class="title-right">
-      {{ xianshi }}个待完成·共4个
+      {{ xianshi }} 个待完成 · 共 {{ items.length }} 个
     </div>
   </div>
 
@@ -79,6 +71,7 @@ const xianshi = computed(
 .title-left {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 .title-right {
