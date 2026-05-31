@@ -5,7 +5,6 @@ import Layout from '../layout/index.vue'
 
 import Daka from '../views/daka/index.vue'
 import Tongji from '../views/shuju/index.vue'
-import TodoList from '../views/todolist/index.vue'
 import Xiguan from '../views/xiguan/index.vue'
 
 const routes = [
@@ -28,11 +27,6 @@ const routes = [
         component: Xiguan,
       },
 
-      {
-        path: 'todolist',
-        name: 'todolist',
-        component: TodoList,
-      },
       {
         path: 'xiguan',
         name: 'xiguan',

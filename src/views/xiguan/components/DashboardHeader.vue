@@ -93,6 +93,12 @@ const set = computed(() => {
   font-weight: 500;
 }
 
+.wave-icon {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave 2.5s infinite;
+}
+
 .progress-card {
   width: 150px;
   height: 150px;
@@ -140,5 +146,35 @@ const set = computed(() => {
   font-weight: 700;
   color: #d97706;
   line-height: 1;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  15% {
+    transform: rotate(14deg);
+  }
+
+  30% {
+    transform: rotate(-8deg);
+  }
+
+  45% {
+    transform: rotate(14deg);
+  }
+
+  60% {
+    transform: rotate(-4deg);
+  }
+
+  75% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
 }
 </style>
