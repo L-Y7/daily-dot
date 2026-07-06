@@ -1,19 +1,23 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { login } from '../../api/login'
 import { UserNameKey } from '../../utils/const'
 
 const router = useRouter()
 
 const userName = ref('')
 
-function login() {
+function handleLogin() {
   if (!userName.value.trim())
     return
-
-  localStorage.setItem(UserNameKey, userName.value.trim())
-
-  router.push('/daka')
+  login(userName.value.trim(), '123456').then((res) => {
+   
+    if (res.data.code === 0) {
+      localStorage.setItem(UserNameKey, userName.value.trim())
+      router.push('/daka')
+    }
+  })
 }
 </script>
 
@@ -54,7 +58,7 @@ function login() {
           </p>
         </div>
         <div>
-          <form class="box2" @submit.prevent="login">
+          <form class="box2" @submit.prevent="handleLogin">
             <label class="form-label" for="username">用户名</label>
             <input
               id="username"
