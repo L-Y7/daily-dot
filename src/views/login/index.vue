@@ -2,19 +2,21 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '../../api/login'
-import { UserNameKey } from '../../utils/const'
+import { TokenKey, UserNameKey } from '../../utils/const'
 
 const router = useRouter()
 
 const userName = ref('')
+const password = ref('')
 
 function handleLogin() {
   if (!userName.value.trim())
     return
-  login(userName.value.trim(), '123456').then((res) => {
+  login(userName.value.trim(), password.value).then((res) => {
    
     if (res.data.code === 0) {
       localStorage.setItem(UserNameKey, userName.value.trim())
+      localStorage.setItem(TokenKey, res.data.data.token)
       router.push('/daka')
     }
   })
@@ -66,9 +68,22 @@ function handleLogin() {
               type="text"
               required
               class="write"
+
               autocomplete="username"
               placeholder="直接输入用户名（无需注册）"
             >
+
+            <input
+              id="userpassword"
+              v-model="password"
+              type="password"
+              required
+              class="write"
+              pattern="[0-9]*"
+              placeholder="直接输入密码"
+              @input="password = password.replace(/\D/g, '')"
+            >
+
             <button type="submit" class="btn" :disabled="!userName.trim()">
               <span class="log">登录</span>
             </button>
@@ -147,6 +162,9 @@ function handleLogin() {
 
 .box2 {
   margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .form-label {

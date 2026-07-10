@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { UserNameKey } from '../utils/const'
-
 import Layout from '../layout/index.vue'
+
+import { TokenKey } from '../utils/const'
 
 import Daka from '../views/daka/index.vue'
 import Tongji from '../views/shuju/index.vue'
@@ -51,7 +51,7 @@ export const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const isLogin = Boolean(localStorage.getItem(UserNameKey))
+  const isLogin = Boolean(localStorage.getItem(TokenKey))
 
   if (to.path !== '/login' && !isLogin)
     return '/login'

@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { UserNameKey } from '../../utils/const'
+import { TokenKey, UserNameKey } from '../../utils/const'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +12,7 @@ const list = [
 
 function backToLogin() {
   localStorage.removeItem(UserNameKey)
+  localStorage.removeItem(TokenKey)
   router.push('/login')
 }
 </script>
